@@ -3,6 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serializers
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from . import permissions
+from . import models
+
 
 # Create your views here.
 class HelloApiView(APIView):
@@ -49,7 +53,7 @@ class HelloViewSet(viewsets.ViewSet):
     """ Test the view set """
 
     serializer_class = serializers.HelloSerializer
-    
+
     def list(self,request):
         """ print a hello message and list an object """
         a_viewset = [
@@ -89,3 +93,12 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """delete an object"""
         return Response({'HTTP Method':'DELETE'})
+
+
+class UserProfileViewset(viewsets.ModelViewSet):
+    """ Handling creating and updating user profiles """
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfiles.objects.all()
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateObjectPermission,)
