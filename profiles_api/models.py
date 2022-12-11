@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
 
 
 # Create your models here.
@@ -46,3 +47,17 @@ class UserProfiles(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Retrieve string representation of our user"""
         return (self.email)
+
+
+class ProfileFeedItem(models.Model):
+
+    user_model = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete = models.CASCADE
+    )
+    status = models.CharField(max_length = 255)
+    created = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        """ Return string representation of our model """
+        return self.status

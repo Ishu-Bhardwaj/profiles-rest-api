@@ -9,6 +9,7 @@ from rest_framework.settings import api_settings
 from . import permissions
 from . import models
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -113,3 +114,18 @@ class UserloginAPIView(ObtainAuthToken):
     """ Handles login for users """
 
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class ProfileFeedViewSet(viewsets.ModelViewSet):
+    """ Handels creating, updating and deleting profile feed items """
+
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (
+    permissions.UpdateStatusPermission,
+    IsAuthenticated
+    )
+
+    def perform_create(self,serializer):
+        serializer.save(user_model=self.request.user)
